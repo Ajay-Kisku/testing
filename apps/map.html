@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Location Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        /* Make the map fill the entire screen */
+        #map { 
+            height: 100vh; 
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        // Initialize the map with a default center and zoom level
+        var map = L.map('map').setView([51.505, -0.09], 13); // Default position is London
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Function to handle the user's location
+        function onLocationFound(e) {
+            var lat = e.latlng.lat;
+            var lon = e.latlng.lng;
+
+            // Add a marker at the user's current location
+            L.marker([lat, lon]).addTo(map)
+                .bindPopup("You are here!")
+                .openPopup();
+
+            // Center the map at the user's location
+            map.setView([lat, lon], 13);
+
+            // Add a circle representing the accuracy of the location
+            var circle = L.circle([lat, lon], {
+                color: 'blue',
+                fillColor: '#30a5ff',
+                fillOpacity: 0.5,
+                radius: e.accuracy
+            }).addTo(map);
+        }
+
+        // Function to handle location errors
+        function onLocationError(e) {
+            alert("Location access denied or unavailable.");
+        }
+
+        // Check if geolocation is available
+        if (navigator.geolocation) {
+            navigator.geolocation.watchPosition(onLocationFound, onLocationError, {
+                enableHighAccuracy: true, // Try to get the most accurate location
+                maximumAge: 10000,         // Cache the location for 10 seconds
+                timeout: 5000              // Set a timeout for location fetch
+            });
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    </script>
+</body>
+</html>
