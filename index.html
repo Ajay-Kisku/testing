@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shake Detection with Graph</title>
+    <title>Shake Detection with Live Chart</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -59,7 +59,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Shake Detection with Graph</h1>
+    <h1>Shake Detection with Live Chart</h1>
     <div id="status" class="waiting">
         Waiting for movement...
     </div>
@@ -91,15 +91,12 @@
         const accelYDisplay = document.getElementById('accel-y');
         const accelZDisplay = document.getElementById('accel-z');
 
-        let lastAcceleration = { x: null, y: null, z: null };
-        let lastUpdateTime = 0;
-
         // Initialize Chart.js
         const ctx = document.getElementById('accelerationChart').getContext('2d');
         const accelerationChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: Array(50).fill(''), // Placeholder labels for 50 data points
+                labels: [], // Dynamic labels for the live chart
                 datasets: [
                     { label: 'Acceleration X', data: [], borderColor: 'red', fill: false },
                     { label: 'Acceleration Y', data: [], borderColor: 'blue', fill: false },
@@ -108,12 +105,16 @@
             },
             options: {
                 responsive: true,
+                animation: false, // Disable animation for real-time updates
                 scales: {
                     x: { display: false },
                     y: { beginAtZero: true }
                 }
             }
         });
+
+        let lastAcceleration = { x: null, y: null, z: null };
+        let lastUpdateTime = 0;
 
         // Add event listener for device motion
         window.addEventListener('devicemotion', (event) => {
@@ -138,6 +139,12 @@
             updateChart(0, acceleration.x || 0);
             updateChart(1, acceleration.y || 0);
             updateChart(2, acceleration.z || 0);
+
+            // Add a timestamp for live scrolling
+            const timeLabel = new Date().toLocaleTimeString();
+            accelerationChart.data.labels.push(timeLabel);
+            if (accelerationChart.data.labels.length > 50) accelerationChart.data.labels.shift();
+
             accelerationChart.update();
 
             // Check if enough time has passed since the last update
