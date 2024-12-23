@@ -9,11 +9,35 @@
     <style>
         /* Make the map fill the entire screen */
         #map { 
-            height: 100vh; 
+            height: 80vh; 
+        }
+        /* Style the buttons */
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+        button {
+            margin-bottom: 5px;
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+
+    <!-- Buttons for controlling the actions -->
+    <div id="controls">
+        <button id="startTracking">Start Tracking</button>
+        <button id="stopTracking">Stop Tracking</button>
+        <button id="centerLocation">Center on My Location</button>
+    </div>
+
     <div id="map"></div>
 
     <script>
@@ -25,26 +49,41 @@
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
+        var tracking = false;
+        var userMarker;
+        var userCircle;
+
         // Function to handle the user's location
         function onLocationFound(e) {
             var lat = e.latlng.lat;
             var lon = e.latlng.lng;
 
-            // Add a marker at the user's current location
-            L.marker([lat, lon]).addTo(map)
-                .bindPopup("You are here!")
-                .openPopup();
+            // If tracking is on, update the user's marker and circle
+            if (tracking) {
+                if (userMarker) {
+                    userMarker.setLatLng([lat, lon]);
+                } else {
+                    // Add a marker at the user's current location if it doesn't exist
+                    userMarker = L.marker([lat, lon]).addTo(map)
+                        .bindPopup("You are here!")
+                        .openPopup();
+                }
 
-            // Center the map at the user's location
-            map.setView([lat, lon], 13);
+                if (userCircle) {
+                    userCircle.setLatLng([lat, lon]).setRadius(e.accuracy);
+                } else {
+                    // Add a circle representing the accuracy of the location
+                    userCircle = L.circle([lat, lon], {
+                        color: 'blue',
+                        fillColor: '#30a5ff',
+                        fillOpacity: 0.5,
+                        radius: e.accuracy
+                    }).addTo(map);
+                }
 
-            // Add a circle representing the accuracy of the location
-            var circle = L.circle([lat, lon], {
-                color: 'blue',
-                fillColor: '#30a5ff',
-                fillOpacity: 0.5,
-                radius: e.accuracy
-            }).addTo(map);
+                // Center the map on the user's location
+                map.setView([lat, lon], 13);
+            }
         }
 
         // Function to handle location errors
@@ -52,16 +91,54 @@
             alert("Location access denied or unavailable.");
         }
 
-        // Check if geolocation is available
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(onLocationFound, onLocationError, {
-                enableHighAccuracy: true, // Try to get the most accurate location
-                maximumAge: 10000,         // Cache the location for 10 seconds
-                timeout: 5000              // Set a timeout for location fetch
-            });
-        } else {
-            alert("Geolocation is not supported by this browser.");
+        // Start tracking the user's location
+        function startTracking() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(onLocationFound, onLocationError, {
+                    enableHighAccuracy: true, // Try to get the most accurate location
+                    maximumAge: 10000,         // Cache the location for 10 seconds
+                    timeout: 5000              // Set a timeout for location fetch
+                });
+                tracking = true;
+                document.getElementById('startTracking').disabled = true;
+                document.getElementById('stopTracking').disabled = false;
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
         }
+
+        // Stop tracking the user's location
+        function stopTracking() {
+            if (navigator.geolocation) {
+                // Clear the location tracking
+                tracking = false;
+                document.getElementById('startTracking').disabled = false;
+                document.getElementById('stopTracking').disabled = true;
+            }
+        }
+
+        // Center the map to the user's current location
+        function centerLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var lat = position.coords.latitude;
+                    var lon = position.coords.longitude;
+                    map.setView([lat, lon], 13);
+                    if (userMarker) {
+                        userMarker.setLatLng([lat, lon]);
+                    }
+                    if (userCircle) {
+                        userCircle.setLatLng([lat, lon]);
+                    }
+                });
+            }
+        }
+
+        // Set up button event listeners
+        document.getElementById('startTracking').addEventListener('click', startTracking);
+        document.getElementById('stopTracking').addEventListener('click', stopTracking);
+        document.getElementById('centerLocation').addEventListener('click', centerLocation);
     </script>
+
 </body>
 </html>
