@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shake Detection App</title>
+    <title>Shake Detection with Graph</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -50,10 +50,16 @@
             width: 80%;
             max-width: 300px;
         }
+        canvas {
+            margin-top: 20px;
+            max-width: 100%;
+        }
     </style>
+    <!-- Include Chart.js Library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-    <h1>Shake Detection App</h1>
+    <h1>Shake Detection with Graph</h1>
     <div id="status" class="waiting">
         Waiting for movement...
     </div>
@@ -66,6 +72,7 @@
         <label for="sensitivity">Shake Sensitivity: <span id="sensitivity-value">15</span></label>
         <input type="range" id="sensitivity" min="5" max="50" step="1" value="15">
     </div>
+    <canvas id="accelerationChart"></canvas>
     <script>
         // Default sensitivity threshold
         let SHAKE_THRESHOLD = 15;
@@ -87,6 +94,27 @@
         let lastAcceleration = { x: null, y: null, z: null };
         let lastUpdateTime = 0;
 
+        // Initialize Chart.js
+        const ctx = document.getElementById('accelerationChart').getContext('2d');
+        const accelerationChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Array(50).fill(''), // Placeholder labels for 50 data points
+                datasets: [
+                    { label: 'Acceleration X', data: [], borderColor: 'red', fill: false },
+                    { label: 'Acceleration Y', data: [], borderColor: 'blue', fill: false },
+                    { label: 'Acceleration Z', data: [], borderColor: 'green', fill: false }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { display: false },
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
         // Add event listener for device motion
         window.addEventListener('devicemotion', (event) => {
             const acceleration = event.accelerationIncludingGravity;
@@ -99,6 +127,18 @@
 
             // Skip if acceleration is not available
             if (!acceleration.x && !acceleration.y && !acceleration.z) return;
+
+            // Update Chart.js with new acceleration data
+            const updateChart = (datasetIndex, value) => {
+                const dataset = accelerationChart.data.datasets[datasetIndex];
+                dataset.data.push(value);
+                if (dataset.data.length > 50) dataset.data.shift(); // Keep only the latest 50 points
+            };
+
+            updateChart(0, acceleration.x || 0);
+            updateChart(1, acceleration.y || 0);
+            updateChart(2, acceleration.z || 0);
+            accelerationChart.update();
 
             // Check if enough time has passed since the last update
             if (currentTime - lastUpdateTime > 100) {
