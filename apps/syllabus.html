@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSE Syllabus 7th Semester</title>
 
+        <!-- GSAP CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
+        <!-- ScrollTrigger CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollTrigger.min.js"></script>
+        <!-- ScrollToPlugin CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollToPlugin.min.js"></script>
+
     <style>
         html,body{
             margin: 0px;
@@ -529,6 +536,43 @@
     
         // Load the checklist state when the page is loaded
         window.onload = loadChecklistState;
+
+
+//  Starts JavaScript for Smooth Scroll 
+
+        // Register ScrollTrigger plugin
+        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+
+        // Smooth scrolling for anchor links
+        gsap.utils.toArray('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                gsap.to(window, {
+                    scrollTo: {
+                        y: anchor.getAttribute('href'),
+                        offsetY: 70, // Adjust for fixed navigation
+                    },
+                    duration: 1,
+                    ease: "power2.inOut",
+                });
+            });
+        });
+
+        // Optional: Apply smooth scrolling effect on the whole page
+        gsap.to("html, body", {
+            scrollTo: {
+                y: "max",  // Scroll to the bottom of the page
+                autoKill: false,
+            },
+            duration: 1,
+            ease: "power2.inOut",
+        });
+
+//  Ends JavaScript for Smooth Scroll 
+
+
+
     </script>
     
 </body>
