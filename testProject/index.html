@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shake Detection App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        h1 {
+            margin-top: 20px;
+        }
+        #status {
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+        .detected {
+            color: green;
+            font-weight: bold;
+        }
+        .waiting {
+            color: gray;
+        }
+        .info {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .control {
+            margin: 20px auto;
+            text-align: center;
+        }
+        .control label {
+            font-size: 16px;
+            display: block;
+            margin-bottom: 5px;
+        }
+        .control input {
+            width: 80%;
+            max-width: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Shake Detection App</h1>
+    <div id="status" class="waiting">
+        Waiting for movement...
+    </div>
+    <div id="acceleration-info" class="info">
+        <p>Acceleration X: <span id="accel-x">0</span></p>
+        <p>Acceleration Y: <span id="accel-y">0</span></p>
+        <p>Acceleration Z: <span id="accel-z">0</span></p>
+    </div>
+    <div class="control">
+        <label for="sensitivity">Shake Sensitivity: <span id="sensitivity-value">15</span></label>
+        <input type="range" id="sensitivity" min="5" max="50" step="1" value="15">
+    </div>
+    <script>
+        // Default sensitivity threshold
+        let SHAKE_THRESHOLD = 15;
+
+        // Update sensitivity dynamically
+        const sensitivitySlider = document.getElementById('sensitivity');
+        const sensitivityValueDisplay = document.getElementById('sensitivity-value');
+        sensitivitySlider.addEventListener('input', () => {
+            SHAKE_THRESHOLD = parseInt(sensitivitySlider.value, 10);
+            sensitivityValueDisplay.textContent = SHAKE_THRESHOLD;
+        });
+
+        // Elements to display status and acceleration
+        const statusDisplay = document.getElementById('status');
+        const accelXDisplay = document.getElementById('accel-x');
+        const accelYDisplay = document.getElementById('accel-y');
+        const accelZDisplay = document.getElementById('accel-z');
+
+        let lastAcceleration = { x: null, y: null, z: null };
+        let lastUpdateTime = 0;
+
+        // Add event listener for device motion
+        window.addEventListener('devicemotion', (event) => {
+            const acceleration = event.accelerationIncludingGravity;
+            const currentTime = Date.now();
+
+            // Display acceleration data
+            accelXDisplay.textContent = acceleration.x ? acceleration.x.toFixed(2) : 0;
+            accelYDisplay.textContent = acceleration.y ? acceleration.y.toFixed(2) : 0;
+            accelZDisplay.textContent = acceleration.z ? acceleration.z.toFixed(2) : 0;
+
+            // Skip if acceleration is not available
+            if (!acceleration.x && !acceleration.y && !acceleration.z) return;
+
+            // Check if enough time has passed since the last update
+            if (currentTime - lastUpdateTime > 100) {
+                const deltaTime = currentTime - lastUpdateTime;
+                lastUpdateTime = currentTime;
+
+                if (lastAcceleration.x !== null && lastAcceleration.y !== null && lastAcceleration.z !== null) {
+                    // Calculate the change in acceleration
+                    const deltaX = acceleration.x - lastAcceleration.x;
+                    const deltaY = acceleration.y - lastAcceleration.y;
+                    const deltaZ = acceleration.z - lastAcceleration.z;
+
+                    // Calculate the total movement magnitude
+                    const totalMovement = Math.sqrt(deltaX ** 2 + deltaY ** 2 + deltaZ ** 2) / deltaTime;
+
+                    // Detect shake or jerk
+                    if (totalMovement > SHAKE_THRESHOLD) {
+                        statusDisplay.textContent = "Jerk or shake detected!";
+                        statusDisplay.classList.remove('waiting');
+                        statusDisplay.classList.add('detected');
+
+                        // Reset the message after a short delay
+                        setTimeout(() => {
+                            statusDisplay.textContent = "Waiting for movement...";
+                            statusDisplay.classList.remove('detected');
+                            statusDisplay.classList.add('waiting');
+                        }, 2000);
+                    }
+                }
+
+                // Update the last acceleration values
+                lastAcceleration = {
+                    x: acceleration.x,
+                    y: acceleration.y,
+                    z: acceleration.z
+                };
+            }
+        });
+    </script>
+</body>
+</html>
