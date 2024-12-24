@@ -3,141 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Location Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <title>My Map</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+
     <style>
-        /* Make the map fill the entire screen */
+        * {
+            margin: 0;
+            padding: 0;
+        }
         #map { 
-            height: 80vh; 
+            height: 100vh;
+            width: 100vw; 
         }
-        /* Style the buttons */
-        #controls {
+        body {
+            position: relative;
+        }
+        #labels {
+            z-index: 9999;
             position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1000;
-            background: rgba(255, 255, 255, 0.7);
-            padding: 10px;
-            border-radius: 5px;
+            bottom: 0;
+            width: calc(100vw - 0px);
+            background-color: white;
+            /* padding: 5px; */
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 20px;
         }
-        button {
-            margin-bottom: 5px;
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
+        #live-location {
+            z-index: 9999;
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: white;
+            font-size: 20px;
+            padding: 5px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Buttons for controlling the actions -->
-    <div id="controls">
-        <button id="startTracking">Start Tracking</button>
-        <button id="stopTracking">Stop Tracking</button>
-        <button id="centerLocation">Center on My Location</button>
-    </div>
-
     <div id="map"></div>
 
-    <script>
-        // Initialize the map with a default center and zoom level
-        var map = L.map('map').setView([51.505, -0.09], 13); // Default position is London
+    <div id="live-location">
+        Updating live location...
+    </div>
 
-        // Add OpenStreetMap tile layer
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    <div id="labels">
+        <div id="boys">Boys : Blue Color</div>
+        <div id="girls">Girls : Pink Color</div>
+        <div id="live-marker">Live Location : Green Color</div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <script>
+        const locationHazibag = [24.01970674929174, 85.37083907272222];
+        var map = L.map('map').setView(locationHazibag, 15);
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '<a href="https://www.openstreetmap.org/copyright"></a>'
         }).addTo(map);
 
-        var tracking = false;
-        var userMarker;
-        var userCircle;
+        const locationUCET = [24.01970674929174, 85.37083907272222];
+        const locationSKGirlsHostel = [24.00651066854163, 85.35806531807867];
 
-        // Function to handle the user's location
-        function onLocationFound(e) {
-            var lat = e.latlng.lat;
-            var lon = e.latlng.lng;
+        var ucet = L.marker(locationUCET).addTo(map).bindPopup("UCET");
+        var skGirlsHostel = L.marker(locationSKGirlsHostel).addTo(map).bindPopup("Girls' Hostel");
 
-            // If tracking is on, update the user's marker and circle
-            if (tracking) {
-                if (userMarker) {
-                    userMarker.setLatLng([lat, lon]);
-                } else {
-                    // Add a marker at the user's current location if it doesn't exist
-                    userMarker = L.marker([lat, lon]).addTo(map)
-                        .bindPopup("You are here!")
-                        .openPopup();
-                }
+        // Create live location marker
+        var liveMarker = L.marker(locationHazibag, { icon: L.icon({ iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png', iconSize: [25, 41], iconAnchor: [12, 41], className: 'green' }) }).addTo(map).bindPopup("Live Location");
 
-                if (userCircle) {
-                    userCircle.setLatLng([lat, lon]).setRadius(e.accuracy);
-                } else {
-                    // Add a circle representing the accuracy of the location
-                    userCircle = L.circle([lat, lon], {
-                        color: 'blue',
-                        fillColor: '#30a5ff',
-                        fillOpacity: 0.5,
-                        radius: e.accuracy
-                    }).addTo(map);
-                }
-
-                // Center the map on the user's location
-                map.setView([lat, lon], 13);
-            }
-        }
-
-        // Function to handle location errors
-        function onLocationError(e) {
-            alert("Location access denied or unavailable.");
-        }
-
-        // Start tracking the user's location
-        function startTracking() {
+        // Update live location marker with geolocation
+        function updateLiveLocation() {
             if (navigator.geolocation) {
-                navigator.geolocation.watchPosition(onLocationFound, onLocationError, {
-                    enableHighAccuracy: true, // Try to get the most accurate location
-                    maximumAge: 10000,         // Cache the location for 10 seconds
-                    timeout: 5000              // Set a timeout for location fetch
-                });
-                tracking = true;
-                document.getElementById('startTracking').disabled = true;
-                document.getElementById('stopTracking').disabled = false;
+                navigator.geolocation.watchPosition(
+                    function (position) {
+                        const { latitude, longitude } = position.coords;
+                        liveMarker.setLatLng([latitude, longitude]);
+                        document.getElementById("live-location").innerText = `Live Location: [${latitude.toFixed(6)}, ${longitude.toFixed(6)}]`;
+                        map.setView([latitude, longitude], 15);
+                    },
+                    function (error) {
+                        document.getElementById("live-location").innerText = "Unable to access location.";
+                    }
+                );
             } else {
-                alert("Geolocation is not supported by this browser.");
+                document.getElementById("live-location").innerText = "Geolocation is not supported by this browser.";
             }
         }
 
-        // Stop tracking the user's location
-        function stopTracking() {
-            if (navigator.geolocation) {
-                // Clear the location tracking
-                tracking = false;
-                document.getElementById('startTracking').disabled = false;
-                document.getElementById('stopTracking').disabled = true;
-            }
-        }
-
-        // Center the map to the user's current location
-        function centerLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
-                    var lat = position.coords.latitude;
-                    var lon = position.coords.longitude;
-                    map.setView([lat, lon], 13);
-                    if (userMarker) {
-                        userMarker.setLatLng([lat, lon]);
-                    }
-                    if (userCircle) {
-                        userCircle.setLatLng([lat, lon]);
-                    }
-                });
-            }
-        }
-
-        // Set up button event listeners
-        document.getElementById('startTracking').addEventListener('click', startTracking);
-        document.getElementById('stopTracking').addEventListener('click', stopTracking);
-        document.getElementById('centerLocation').addEventListener('click', centerLocation);
+        updateLiveLocation();
     </script>
 
 </body>
