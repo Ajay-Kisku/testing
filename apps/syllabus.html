@@ -204,23 +204,30 @@
 
             nav{
 
-                height: 400px;
+                height: 100vh;
                 position: fixed;
                 z-index: 200;
                 /* top: 20px; */
 
                 display: flex;
-                flex-direction: column;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+
+                gap: 20px;
 
                 padding-block: 5px;
+                /* padding-inline: 20px; */
 
                 writing-mode: vertical-lr;
-                overflow: hidden;
+                /* overflow: scroll; */
 
                 /* transform: rotate(90deg); */
 
                 .links{
 
+                    height: 400px;
+                    overflow: scroll;
                     color: red;
 
                     a{
@@ -251,10 +258,9 @@
 <body>
     
 
-    <header>
-        <div style="font-size: 55px; font-weight: bold; color: rgb(32, 32, 32);
+    <header hidden>
+        <div style="font-size: 50px; font-weight: bold; color: rgb(32, 32, 32);
         font-family:Haettenschweiler, 'Arial Narrow Bold', sans-serif; ">
-
 
             7<sup>th</sup> Semester CSE Syllabus
 
@@ -270,10 +276,12 @@
         </div>
     </header>
 
+
     <main>
 
 
         <nav>
+            <div class="menu"> <b>Menu</b></div>
 
                 <div class="links">
                     <a href="#ai">AI</a>
@@ -283,6 +291,8 @@
                     <a href="#DMDW">Data_Warehousing
                     </a>
                 </div>
+
+            <div class="settings">Settings</div>
           
         </nav>
 
@@ -293,7 +303,7 @@
 
                 <div class="subject-name">Artificial Intelligence 
 
-                    <a class="youtube-video" title="YouTube Video of almost 6 hours" href="https://www.youtube.com/watch?v=yiXAmkimZRQ">↗</a>
+                    <a hidden class="youtube-video" title="YouTube Video of almost 6 hours" href="https://www.youtube.com/watch?v=yiXAmkimZRQ">↗</a>
                 </div>
 
                 <div class="module">
