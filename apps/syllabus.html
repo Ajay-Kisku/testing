@@ -276,6 +276,12 @@
             padding-inline: 6px;
         }
 
+        /* Labels for checked inputs */
+        input:checked + label {
+            text-decoration: line-through;
+            color: rgb(35, 126, 47);
+        }
+
 
     </style>
 
@@ -332,7 +338,10 @@
                 </div>
 
             <div class="settings" 
+
+            style="
             border-right: 1px solid rgb(56, 56, 56);
+            "
             >
             Settings</div>
           
