@@ -172,6 +172,8 @@
             flex-direction: row;
             gap : 15px;
 
+            position: static;
+
             /* overflow: auto; */
             /* background-color: gold; */
             
@@ -190,6 +192,24 @@
                 padding-block: 5px;
             }
         }
+
+
+.links::before {
+    color: transparent;
+  content: ' __';
+  position: sticky;
+  top: 0;
+  background: linear-gradient(white, rgba(255, 255, 255, 0.001)); /* transparent keyword is broken in Safari */
+}
+
+.links::after {
+    color: transparent;
+  content: ' ___';
+  position: sticky;
+  height:  55px;
+  bottom: 0;
+  background: linear-gradient(rgba(255, 255, 255, 0.001), white ); /* transparent keyword is broken in Safari */
+}
 
         main{
             display: flex;
@@ -230,8 +250,10 @@
                     overflow: scroll;
                     color: red;
 
+                    /* background-color: red; */
+
                     a{
-                        /* border-bottom: 1px dashed rgb(172, 16, 16); */
+                        /* border: 1px dashed rgb(172, 16, 16); */
 
                     }
                 }
@@ -277,26 +299,47 @@
     </header>
 
 
+
+
     <main>
 
 
         <nav>
-            <div class="menu"> <b>Menu</b></div>
+            <div class="menu"
+            style="border-right: 1px solid rgb(56, 56, 56);
+            
+            color: white;
+            background-color: rgb(20, 20, 20);
+            padding-inline: 20px;
+            padding-block: 2px;
+            "
+
+            > <b>Menu</b></div>
 
                 <div class="links">
-                    <a href="#ai">AI</a>
-                    <a href="#ml">ML</a>
+                    <a href="#ai">Artificial_Intelligence</a>
+                    <a href="#ml">Machine_Learning</a>
                     <a href="#se">Software_Engineering</a>
                     <a href="#cry">Cryptography</a>
                     <a href="#DMDW">Data_Warehousing
                     </a>
                 </div>
 
-            <div class="settings">Settings</div>
+            <div class="settings" 
+                style="border-right: 1px solid rgb(56, 56, 56);"
+            >
+            Settings</div>
           
         </nav>
 
         <div class="content">
+
+            <div style="font-size: 50px; font-weight: bold; color: rgb(32, 32, 32);
+            font-family:Haettenschweiler, 'Arial Narrow Bold', sans-serif; ">
+        
+                7<sup>th</sup> Semester CSE Syllabus
+        
+            </div>
 
             <!-- Artificial Intelligence -->
             <div class="page page-ai" id="ai">
