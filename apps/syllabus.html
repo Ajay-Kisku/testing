@@ -194,7 +194,7 @@
         }
 
 
-.links::before {
+.linksQ::before {
     color: transparent;
   content: ' __';
   position: sticky;
@@ -202,7 +202,7 @@
   background: linear-gradient(white, rgba(255, 255, 255, 0.001)); /* transparent keyword is broken in Safari */
 }
 
-.links::after {
+.linksQ::after {
     color: transparent;
   content: ' ___';
   position: sticky;
@@ -213,7 +213,7 @@
 
         main{
             display: flex;
-            /* gap: 10px; */
+            gap: 10px;
             
             /* flex-direction: row-reverse; */
 
@@ -231,13 +231,13 @@
 
                 display: flex;
                 flex-direction: row;
-                justify-content: flex-start;
+                justify-content: space-around;
                 align-items: center;
 
                 gap: 20px;
 
                 /* padding-block: 5px; */
-                padding-inline: 20px;
+                /* margin-inline: 50px; */
 
                 writing-mode: vertical-lr;
                 /* overflow: scroll; */
@@ -247,7 +247,10 @@
                 .links{
 
                     max-height: 500px;
-                    overflow: scroll;
+                    overflow: auto;
+
+                    margin-inline: 40px;
+
                     color: red;
 
                     /* background-color: red; */
