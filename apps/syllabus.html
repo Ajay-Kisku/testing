@@ -95,52 +95,68 @@
 
         .page-ai{
 
+            --checked-color : rgb(52, 114, 250);
+
+            accent-color: var(--checked-color);
+
             .subject-name{
                 color: blue;
             }
 
             .module-name{
-                color: rgb(52, 114, 250);
+                color: var(--checked-color);
             }
 
 
             /* Labels for checked inputs */
             input:checked + label {
                 text-decoration: line-through;
-                color: rgb(52, 114, 250);
+                color: var(--checked-color);
+                
             }
+
         }
 
         .page-ml{
+
+
+            --checked-color : rgb(172, 3, 172);
+
+            accent-color: var(--checked-color);
+
 
             .subject-name{
                 color: purple;
             }
 
             .module-name{
-                color: rgb(172, 3, 172);
+                color: var(--checked-color);
             }
 
                         /* Labels for checked inputs */
             input:checked + label {
                 text-decoration: line-through;
-                color: rgb(172, 3, 172);
+                color: var(--checked-color);
             }
         }
 
         .page-se{
+
+            --checked-color : rgb(198 133 15);
+
+            accent-color: var(--checked-color);
 
             .subject-name{
                 color: orange;
             }
 
             .module-name{
-                color: rgb(245, 179, 56);
+                color: var(--checked-color);
             }
 
             input:checked + label {
                 text-decoration: line-through;
-                color: rgb(245, 179, 56);
+                color: var(--checked-color);
             }
 
             
@@ -148,33 +164,41 @@
         
         .page-cry{
 
+            --checked-color : rgb(248, 82, 82);
+
+            accent-color: var(--checked-color);
+
             .subject-name{
                 color: red;
             }
 
             .module-name{
-                color: rgb(248, 82, 82);
+                color: var(--checked-color);
             }
 
             input:checked + label {
                 text-decoration: line-through;
-                color: rgb(248, 82, 82);
+                color: var(--checked-color);
             }
         }
         
         .page-dmdw{
+
+            --checked-color : rgb(4, 153, 4);
+
+            accent-color: var(--checked-color);
 
             .subject-name{
                 color: green;
             }
 
             .module-name{
-                color: rgb(4, 153, 4);
+                color: var(--checked-color);
             }
 
             input:checked + label {
                 text-decoration: line-through;
-                color: rgb(4, 153, 4);
+                color: var(--checked-color);
             }
         }
 
