@@ -364,7 +364,7 @@
 
 
         <nav>
-            <div class="menu"
+            <div hidden class="menu"
             style="border-right: 1px solid rgb(56, 56, 56);
             
             color: white;
@@ -376,6 +376,59 @@
 
             > <b>//Menu::</b></div>
 
+            <select id="menu" name="food" style="border-right: 1px solid rgb(56, 56, 56);
+            
+            color: white;
+            background-color: rgb(31, 31, 31);
+            border: none;
+            font-weight: bold;
+            
+            padding-inline: 10px;
+            padding-block: 2px;
+
+            field-sizing: content;
+
+            /* for Firefox */
+            -moz-appearance: none;
+            /* for Safari, Chrome, Opera */
+            -webkit-appearance: none;
+
+            ">
+              <option value="menu" selected>//Menu::</option>
+              <option value="menu" disabled>Whatever you wish !!!!</option>
+
+              <optgroup label="Appetizers" disabled>
+                <option value="bruschetta">Bruschetta with Heirloom Tomatoes - $18</option>
+                <option value="stuffed_mushrooms">Stuffed Mushrooms with Herbs - $20</option>
+                <option value="spring_rolls">Vegetable Spring Rolls - $15</option>
+              </optgroup>
+              <optgroup label="Main Courses">
+                <option value="wild_mushroom_risotto">Wild Mushroom Risotto - $40</option>
+                <option value="eggplant_parmigiana" disabled>Eggplant Parmigiana - $35</option>
+                <option value="grilled_vegetable_pasta">Grilled Vegetable Pasta - $38</option>
+              </optgroup>
+              <optgroup label="Desserts">
+                <option value="molten_chocolate_cake">Molten Chocolate Cake - $18</option>
+                <option value="classic_creme_brulee">Classic Crème Brûlée - $15</option>
+                <option value="fruit_tart">Seasonal Fruit Tart - $14</option>
+              </optgroup>
+              <optgroup label="Ice Creams">
+                <option value="vanilla_bean">Vanilla Bean Ice Cream - $10</option>
+                <option value="chocolate_truffle">Chocolate Truffle Ice Cream - $12</option>
+                <option value="mango_sorbet">Mango Sorbet - $10</option>
+              </optgroup>
+              <optgroup label="Beverages">
+                <option value="signature_mocktail">Signature Mocktail - $20</option>
+                <option value="iced_tea">Herbal Iced Tea - $10</option>
+                <option value="sparkling_water">Sparkling Water - $8</option>
+              </optgroup>
+              
+              
+            </select>
+
+
+
+
                 <div class="links">
                     <a href="#ai">AI</a>
                     <a href="#ml">ML</a>
@@ -386,12 +439,13 @@
                 </div>
 
             <div class="settings" 
-
             style="
             border-right: 1px solid rgb(56, 56, 56);
             "
-            >
-            Settings</div>
+            onclick="alert('Coding ke field me aa k setting knojna.... ye to achhi baat nahi hai!!!')"
+            > Settings
+            </div>
+
           
         </nav>
 
