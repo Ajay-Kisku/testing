@@ -82,6 +82,8 @@
             a{
 
                 text-decoration: none;
+                cursor: pointer;
+                user-select: none;
 
                 /* border: 1px solid red; */
                 padding: 10px;
@@ -101,7 +103,11 @@
             font-weight: bold; 
             color: rgb(32, 32, 32);
             font-family:Haettenschweiler, 'Arial Narrow Bold', sans-serif; 
+            padding-block: 10px;
         }
+
+
+
 
         .page-ai{
 
@@ -300,7 +306,8 @@
 
                     margin-inline: 40px;
 
-                    color: red;
+                    cursor: pointer;
+                    user-select: none;
 
                     /* background-color: red; */
 
@@ -335,7 +342,7 @@
             
             position: fixed;
             top: 160px;
-            right: -132px;
+            right: -120px;
 
             rotate: 270deg;
             color: rgb(41, 41, 41);
@@ -346,17 +353,36 @@
         }
 
 
+        .full-screen{
+            z-index: 999999;
+            position: fixed;
+            top: 20px;
+            right: 15px;
+
+            font-size: 20px;
+            cursor: pointer;
+            user-select: none;
+
+            color: rgb(105, 105, 105);
+        }
+
+
+
                 /* this is for desktop only */
 
         @media only screen and (min-width: 600px) {
 
 
-            
+            .full-screen{
+                right: 25px;
+            }
             #dev{
                 font-size: 10px;
                 right: -130px;
                 color: black;
             }
+
+
             .content{
                 .page-title{
                     font-size: 120px;
@@ -408,6 +434,10 @@
 
     </style>
 
+    <style>
+        
+    </style>
+
 </head>
 
 
@@ -416,6 +446,10 @@
 
     <div id="dev">
        ///////// let Developer = {"Ajay Kisku"}; ||||||||||
+    </div>
+
+    <div class="full-screen" title="Go Fullscreen" id="fullscreenToggle">
+        ⤢
     </div>
 
 
@@ -499,6 +533,8 @@
             <div class="settings" 
             style="
             border-right: 1px solid rgb(56, 56, 56);
+            cursor: pointer;
+            user-select: none;
             "
             onclick="alert('कोडिंग के फील्ड में आ के सेटिंग खोजना....ये तो अच्छी बात नहीं है!!!')"
             > Settings
@@ -510,10 +546,8 @@
         <!-- Main Content Area  -->
         <div class="content">
 
-            <div class="page-title" >
-        
-                7<sup>th</sup> Semester CSE Syllabus
-        
+            <div class="page-title">
+                7<sup>th</sup> Semester CSE Syllabus 
             </div>
 
             <!-- Artificial Intelligence -->
@@ -1470,6 +1504,35 @@
 
 
     </script>
+
+
+    <!-- full screen  -->
+    <script>
+
+        const toggleDiv = document.getElementById('fullscreenToggle');
+
+        // Function to toggle fullscreen mode
+        function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+            // Enter fullscreen
+            document.documentElement.requestFullscreen().then(() => {
+            toggleDiv.textContent = '⤬'; // Change symbol to "exit" icon
+            }).catch((err) => {
+            console.error(`Error attempting to enter fullscreen: ${err}`);
+            });
+        } else {
+            // Exit fullscreen
+            document.exitFullscreen().then(() => {
+            toggleDiv.textContent = '⤢'; // Change symbol to "expand" icon
+            }).catch((err) => {
+            console.error(`Error attempting to exit fullscreen: ${err}`);
+            });
+        }
+        }
+
+        // Add click event listener to the div
+        toggleDiv.addEventListener('click', toggleFullscreen);
+        </script>
     
 </body>
 </html>
