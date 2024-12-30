@@ -91,7 +91,17 @@
         }
 
 
+
+
+
         /* applying colors to .subject-name and .module-name */
+
+        .page-title{
+            font-size: 50px;
+            font-weight: bold; 
+            color: rgb(32, 32, 32);
+            font-family:Haettenschweiler, 'Arial Narrow Bold', sans-serif; 
+        }
 
         .page-ai{
 
@@ -335,6 +345,67 @@
             font-family: monospace;
         }
 
+
+                /* this is for desktop only */
+
+        @media only screen and (min-width: 600px) {
+
+
+            
+            #dev{
+                font-size: 10px;
+                right: -130px;
+                color: black;
+            }
+            .content{
+                .page-title{
+                    font-size: 120px;
+                    font-weight: 500;
+                    padding-left: 20px;
+
+                    /* background-color: brown; */
+                    color: rgb(31, 31, 31);
+                    padding-block: 100px;
+
+                    text-align: center;
+                    /* text-shadow: 2px 2px rgb(116, 116, 116); */
+                    /* color: red; */
+                }
+            }
+
+
+            .page{
+                display : flex;
+                gap : 20px;
+
+                flex-wrap: wrap;
+                /* justify-content: space-between; */
+                justify-content: flex-start;
+
+                padding-inline: 30px;
+
+                .subject-name{
+                    /* display: none; */
+                    height: fit-content;
+                    width: 100%;
+                    text-align: left;
+
+                    font-size: 50px;
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                }
+
+                
+
+                .module{
+                    max-width: 300px;
+                    /* height: 100vh; */
+                }
+            }
+
+            
+        }
+
+
     </style>
 
 </head>
@@ -343,25 +414,6 @@
 <body>
     
 
-    <header hidden>
-        <div style="font-size: 50px; font-weight: bold; color: rgb(32, 32, 32);
-        font-family:Haettenschweiler, 'Arial Narrow Bold', sans-serif; ">
-
-            7<sup>th</sup> Semester CSE Syllabus
-
-        </div>
-
-        <div id="nav-links" style="display: none;">
-
-            <a class="subject-name-nav" href="#ai">🧠 Artificial Intelligence</a>
-            <a class="subject-name-nav" href="#ml">🤖 Machine Learning</a>
-            <a class="subject-name-nav" href="#se">📄 Software Engineer</a>
-            <a class="subject-name-nav">🏚 Data Warehousing and Data Mart</a>
-            <a class="subject-name-nav">🔐 Cryptography</a>
-        </div>
-    </header>
-
-
     <div id="dev">
        ///////// let Developer = {"Ajay Kisku"}; ||||||||||
     </div>
@@ -369,7 +421,7 @@
 
     <main>
 
-
+        <!-- Side navigation  -->
         <nav>
             <div hidden class="menu"
             style="border-right: 1px solid rgb(56, 56, 56);
@@ -434,35 +486,31 @@
             </select>
 
 
-            
+            <div class="links">
+                <a href="#ai">AI</a>
+                <a href="#ml">ML</a>
+                <a href="#se">SE</a>
+                <a href="#cry">Cryptography</a>
+                <a href="#DMDW">Data_Warehousing
+                </a>
+            </div>
 
-
-
-
-                <div class="links">
-                    <a href="#ai">AI</a>
-                    <a href="#ml">ML</a>
-                    <a href="#se">SE</a>
-                    <a href="#cry">Cryptography</a>
-                    <a href="#DMDW">Data_Warehousing
-                    </a>
-                </div>
 
             <div class="settings" 
             style="
             border-right: 1px solid rgb(56, 56, 56);
             "
-            onclick="alert('Coding ke field me aa k setting knojna.... ye to achhi baat nahi hai!!!')"
+            onclick="alert('कोडिंग के फील्ड में आ के सेटिंग खोजना....ये तो अच्छी बात नहीं है!!!')"
             > Settings
             </div>
 
           
         </nav>
 
+        <!-- Main Content Area  -->
         <div class="content">
 
-            <div style="font-size: 50px; font-weight: bold; color: rgb(32, 32, 32);
-            font-family:Haettenschweiler, 'Arial Narrow Bold', sans-serif; ">
+            <div class="page-title" >
         
                 7<sup>th</sup> Semester CSE Syllabus
         
@@ -1323,18 +1371,6 @@
         </div>
 
     </main>
-
-
-    <footer hidden>
-
-        <div class="links">
-            <a href="#ai">Artificial_Intelligence</a>
-            <a href="#ml">Machine_Learning</a>
-            <a href="">Cryptography</a>
-            <a href="">Data_Mining_and_Data_Warehousing
-            </a>
-        </div>
-    </footer>
 
 
     <script>
