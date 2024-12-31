@@ -14,11 +14,7 @@
 
         body {
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            padding: 20px;
             font-family: Arial, sans-serif;
             background-color: var(--background-light);
             color: var(--text-light);
@@ -30,28 +26,51 @@
             color: var(--text-dark);
         }
 
-        h1 {
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
             text-align: center;
         }
 
+        .slider-container {
+            margin-top: 20px;
+        }
+
         #support-msg {
-            position: absolute;
-            bottom: 10px;
+            margin-top: 10px;
             font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <h1>Shake to Toggle Theme</h1>
-    <p id="support-msg"></p>
+    <div class="container">
+        <h1>Shake to Toggle Theme</h1>
+        <p>Adjust sensitivity using the slider below:</p>
+        <div class="slider-container">
+            <label for="sensitivity-slider">Sensitivity: <span id="sensitivity-value">15</span></label>
+            <input type="range" id="sensitivity-slider" min="5" max="50" value="15" step="1">
+        </div>
+        <p id="support-msg"></p>
+    </div>
 
     <script>
         let lastAcceleration = { x: 0, y: 0, z: 0 };
-        let shakeThreshold = 15; // Adjust for sensitivity
+        let shakeThreshold = 15; // Initial sensitivity
         let lastShakeTime = 0;
         const debounceTime = 1000; // 1-second debounce
 
         const supportMsg = document.getElementById('support-msg');
+        const sensitivitySlider = document.getElementById('sensitivity-slider');
+        const sensitivityValue = document.getElementById('sensitivity-value');
+
+        // Update shakeThreshold when slider value changes
+        sensitivitySlider.addEventListener('input', () => {
+            shakeThreshold = parseInt(sensitivitySlider.value, 10);
+            sensitivityValue.textContent = shakeThreshold;
+        });
 
         // Function to toggle theme
         function toggleTheme() {
