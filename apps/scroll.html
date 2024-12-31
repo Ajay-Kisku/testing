@@ -3,80 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Device Motion Example</title>
+    <title>Shake to Toggle Theme</title>
     <style>
+        :root {
+            --background-light: #ffffff;
+            --background-dark: #121212;
+            --text-light: #000000;
+            --text-dark: #ffffff;
+        }
+
         body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             font-family: Arial, sans-serif;
-            padding: 20px;
+            background-color: var(--background-light);
+            color: var(--text-light);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
-        .data-box {
-            margin: 10px 0;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+
+        body.dark-mode {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
         }
-        .data-box span {
-            font-weight: bold;
+
+        h1 {
+            text-align: center;
+        }
+
+        #support-msg {
+            position: absolute;
+            bottom: 10px;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <h1>Device Motion Data</h1>
-    <div id="motion-data">
-        <div class="data-box">
-            <span>Acceleration (X):</span> <span id="accel-x">0</span>
-        </div>
-        <div class="data-box">
-            <span>Acceleration (Y):</span> <span id="accel-y">0</span>
-        </div>
-        <div class="data-box">
-            <span>Acceleration (Z):</span> <span id="accel-z">0</span>
-        </div>
-        <div class="data-box">
-            <span>Rotation Rate (Alpha):</span> <span id="rotation-alpha">0</span>
-        </div>
-        <div class="data-box">
-            <span>Rotation Rate (Beta):</span> <span id="rotation-beta">0</span>
-        </div>
-        <div class="data-box">
-            <span>Rotation Rate (Gamma):</span> <span id="rotation-gamma">0</span>
-        </div>
-        <div class="data-box">
-            <span>Interval:</span> <span id="interval">0</span> ms
-        </div>
-    </div>
+    <h1>Shake to Toggle Theme</h1>
     <p id="support-msg"></p>
 
     <script>
-        const accelX = document.getElementById('accel-x');
-        const accelY = document.getElementById('accel-y');
-        const accelZ = document.getElementById('accel-z');
-        const rotationAlpha = document.getElementById('rotation-alpha');
-        const rotationBeta = document.getElementById('rotation-beta');
-        const rotationGamma = document.getElementById('rotation-gamma');
-        const interval = document.getElementById('interval');
+        let lastAcceleration = { x: 0, y: 0, z: 0 };
+        let shakeThreshold = 15; // Adjust for sensitivity
+        let lastShakeTime = 0;
+        const debounceTime = 1000; // 1-second debounce
+
         const supportMsg = document.getElementById('support-msg');
 
+        // Function to toggle theme
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+
         if (window.DeviceMotionEvent) {
-            supportMsg.textContent = "Device Motion API is supported.";
+            supportMsg.textContent = "Shake detection is enabled.";
             window.addEventListener('devicemotion', (event) => {
-                const acceleration = event.acceleration;
-                const rotationRate = event.rotationRate;
+                const currentTime = new Date().getTime();
 
-                // Update DOM with motion data
-                accelX.textContent = acceleration?.x?.toFixed(2) || 0;
-                accelY.textContent = acceleration?.y?.toFixed(2) || 0;
-                accelZ.textContent = acceleration?.z?.toFixed(2) || 0;
+                // Ensure sufficient time has passed since the last shake
+                if (currentTime - lastShakeTime < debounceTime) return;
 
-                rotationAlpha.textContent = rotationRate?.alpha?.toFixed(2) || 0;
-                rotationBeta.textContent = rotationRate?.beta?.toFixed(2) || 0;
-                rotationGamma.textContent = rotationRate?.gamma?.toFixed(2) || 0;
+                const acceleration = event.accelerationIncludingGravity;
 
-                interval.textContent = event.interval.toFixed(2);
+                // Check if acceleration data is available
+                if (!acceleration) return;
+
+                const deltaX = Math.abs(acceleration.x - lastAcceleration.x);
+                const deltaY = Math.abs(acceleration.y - lastAcceleration.y);
+                const deltaZ = Math.abs(acceleration.z - lastAcceleration.z);
+
+                // Detect a shake if the acceleration changes exceed the threshold
+                if (deltaX > shakeThreshold || deltaY > shakeThreshold || deltaZ > shakeThreshold) {
+                    toggleTheme();
+                    lastShakeTime = currentTime; // Update last shake time
+                }
+
+                // Update the last acceleration values
+                lastAcceleration = { x: acceleration.x, y: acceleration.y, z: acceleration.z };
             });
         } else {
-            supportMsg.textContent = "Device Motion API is not supported on this device.";
+            supportMsg.textContent = "DeviceMotionEvent is not supported on this device.";
         }
     </script>
 </body>
