@@ -3,117 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smooth Scrolling with GSAP</title>
-    
-    <!-- GSAP CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/gsap.min.js"></script>
-    <!-- ScrollTrigger CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollTrigger.min.js"></script>
-    <!-- ScrollToPlugin CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.1/ScrollToPlugin.min.js"></script>
-
+    <title>Device Motion Example</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
+        body {
             font-family: Arial, sans-serif;
+            padding: 20px;
         }
-
-        section {
-            padding: 50px;
-            margin: 20px 0;
-            background-color: #f4f4f4;
-            border-radius: 8px;
+        .data-box {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
-
-        h2 {
-            text-align: center;
-        }
-
-        .content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .section1 {
-            background-color: lightblue;
-        }
-
-        .section2 {
-            background-color: lightgreen;
-        }
-
-        .section3 {
-            background-color: lightcoral;
+        .data-box span {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-
-    <!-- Navigation Links -->
-    <nav style="position: fixed; top: 0; left: 0; right: 0; background-color: rgba(0, 0, 0, 0.7); padding: 10px; color: white;">
-        <a href="#section1" style="margin-right: 15px; color: white;">Section 1</a>
-        <a href="#section2" style="margin-right: 15px; color: white;">Section 2</a>
-        <a href="#section3" style="color: white;">Section 3</a>
-    </nav>
-
-    <!-- Sections to Scroll -->
-    <section id="section1" class="section1">
-        <div class="content">
-            <h2>Section 1: Lorem Ipsum</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.</p>
+    <h1>Device Motion Data</h1>
+    <div id="motion-data">
+        <div class="data-box">
+            <span>Acceleration (X):</span> <span id="accel-x">0</span>
         </div>
-    </section>
-
-    <section id="section2" class="section2">
-        <div class="content">
-            <h2>Section 2: Lorem Ipsum</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.</p>
+        <div class="data-box">
+            <span>Acceleration (Y):</span> <span id="accel-y">0</span>
         </div>
-    </section>
-
-    <section id="section3" class="section3">
-        <div class="content">
-            <h2>Section 3: Lorem Ipsum</h2>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.</p>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa.</p>
+        <div class="data-box">
+            <span>Acceleration (Z):</span> <span id="accel-z">0</span>
         </div>
-    </section>
+        <div class="data-box">
+            <span>Rotation Rate (Alpha):</span> <span id="rotation-alpha">0</span>
+        </div>
+        <div class="data-box">
+            <span>Rotation Rate (Beta):</span> <span id="rotation-beta">0</span>
+        </div>
+        <div class="data-box">
+            <span>Rotation Rate (Gamma):</span> <span id="rotation-gamma">0</span>
+        </div>
+        <div class="data-box">
+            <span>Interval:</span> <span id="interval">0</span> ms
+        </div>
+    </div>
+    <p id="support-msg"></p>
 
-    <!-- JavaScript for Smooth Scroll -->
     <script>
-        // Register ScrollTrigger plugin
-        gsap.registerPlugin(ScrollTrigger, ScrollToPlugin);
+        const accelX = document.getElementById('accel-x');
+        const accelY = document.getElementById('accel-y');
+        const accelZ = document.getElementById('accel-z');
+        const rotationAlpha = document.getElementById('rotation-alpha');
+        const rotationBeta = document.getElementById('rotation-beta');
+        const rotationGamma = document.getElementById('rotation-gamma');
+        const interval = document.getElementById('interval');
+        const supportMsg = document.getElementById('support-msg');
 
-        // Smooth scrolling for anchor links
-        gsap.utils.toArray('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
+        if (window.DeviceMotionEvent) {
+            supportMsg.textContent = "Device Motion API is supported.";
+            window.addEventListener('devicemotion', (event) => {
+                const acceleration = event.acceleration;
+                const rotationRate = event.rotationRate;
 
-                gsap.to(window, {
-                    scrollTo: {
-                        y: anchor.getAttribute('href'),
-                        offsetY: 70, // Adjust for fixed navigation
-                    },
-                    duration: 1,
-                    ease: "power2.inOut",
-                });
+                // Update DOM with motion data
+                accelX.textContent = acceleration?.x?.toFixed(2) || 0;
+                accelY.textContent = acceleration?.y?.toFixed(2) || 0;
+                accelZ.textContent = acceleration?.z?.toFixed(2) || 0;
+
+                rotationAlpha.textContent = rotationRate?.alpha?.toFixed(2) || 0;
+                rotationBeta.textContent = rotationRate?.beta?.toFixed(2) || 0;
+                rotationGamma.textContent = rotationRate?.gamma?.toFixed(2) || 0;
+
+                interval.textContent = event.interval.toFixed(2);
             });
-        });
-
-        // Optional: Apply smooth scrolling effect on the whole page
-        gsap.to("html, body", {
-            scrollTo: {
-                y: "max",  // Scroll to the bottom of the page
-                autoKill: false,
-            },
-            duration: 1,
-            ease: "power2.inOut",
-        });
+        } else {
+            supportMsg.textContent = "Device Motion API is not supported on this device.";
+        }
     </script>
-
 </body>
 </html>
